@@ -44,6 +44,7 @@ def evaluate(model, validset):
         qry_pad = embed(qry_pad).to(device)
         pred = model(doc_pad, doc_lens, doc_mask, qry_pad, qry_lens, qry_mask)
         pred = torch.argmax(pred, 1)
+        #获取正确batch的个数
         correct_total += (pred == aws).sum().cpu().item()
         total += doc_pad.size(0)
         del doc_pad, doc_lens, doc_mask, qry_pad, qry_lens, qry_mask, aws
@@ -54,7 +55,7 @@ def evaluate(model, validset):
 
 def train(model: nn.Module, trainset: MRC_Dataset, epoch, validset: MRC_Dataset):
     loss_func = nn.CrossEntropyLoss()
-
+    #过滤掉不可导的参数 （不可训练）
     parameters = filter(lambda p: p.requires_grad, model.parameters())
 
     optimizer = optim.Adam(parameters, lr=lr, weight_decay=weight_decay)
@@ -79,11 +80,11 @@ def train(model: nn.Module, trainset: MRC_Dataset, epoch, validset: MRC_Dataset)
             qry_pad = embed(qry_pad).to(device)
 
             pred = model(doc_pad, doc_lens, doc_mask, qry_pad, qry_lens, qry_mask)
-
             loss = loss_func(pred, aws)
 
             total += doc_pad.size(0)
             pred = torch.argmax(pred, 1)
+
             correct = (pred == aws).sum().cpu().item()
             print(correct)
             correct_total += correct

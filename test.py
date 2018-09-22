@@ -31,5 +31,11 @@ import re
 
 # print(re.findall(r"不|定", '不一定|一定|确定'))
 # print(len(re.findall(r"不|定", '不一定|一定|确定')))
-data = f5per_Dataset(is_trainset=False)
+# data = f5per_Dataset(is_trainset=False)
 # print(data[1])
+
+s1=""
+seq=['1','2','3']
+s= s1.join(seq)
+print(type(s))
+print(s)

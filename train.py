@@ -18,7 +18,7 @@ embed = nn.Embedding.from_pretrained(torch.Tensor(embed_mat))
 embed_dim = 200
 hidden_dim = 128
 lr = 0.001
-batch_size = 128
+batch_size = 64
 weight_decay = 0.0001
 
 vis = visdom.Visdom()
@@ -74,7 +74,7 @@ def train(model: nn.Module, trainset: MRC_Dataset, epoch, validset: MRC_Dataset)
             optimizer.zero_grad()
 
             doc_pad, doc_lens, doc_mask, qry_pad, qry_lens, qry_mask, aws = trainset[ii]
-
+            #to_device 两方面 模型和 计算
             doc_pad = embed(doc_pad).to(device)
             qry_pad = embed(qry_pad).to(device)
 
