@@ -104,8 +104,12 @@ class Attention(nn.Module):
 
         d_mask = q_mask.unsqueeze(2)
         q_mask = k_mask.unsqueeze(2)
+        #bmm :10,3,5   10,5,4 -> 10,3,4
+
+        #d_mask : 10,5,1   q_mask:10,1,5
         dot_mask = torch.bmm(d_mask, torch.transpose(q_mask, 1, 2))
 
+        #dot_mask -> 10,5,5(5是 qry_size or doc_size)
         output, attn = self.attn(q, k, v, mask=dot_mask)
 
         return output, attn

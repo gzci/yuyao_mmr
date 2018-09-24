@@ -6,10 +6,11 @@ from multiprocessing import Pool
 from utils.vocab import VocabDict
 
 
-VALID = "../mrc_data/valid.json"
-TRAIN = "../mrc_data/train.json"
+VALID = "../mrc_data/newvaild.json"
+TRAIN = "../mrc_data/newtrain.json"
 VOCAB = VocabDict()
 
+#这个是 Q size 这么大小的{0，1}数组
 
 def word_match(c, q):
     c_match = [int(w in q) for w in c]
@@ -66,6 +67,7 @@ def parse_function(x):
     al = list(map(lambda c: VOCAB.convert2idx(list(jieba.cut(c))), al))
     w_ms, q_w_ms = word_match(passage, query)
     c_ms, q_c_ms = char_match(passage, query)
+    print(al)
     return VOCAB.convert2idx(passage), VOCAB.convert2idx(query), al, answer_id, \
         w_ms, c_ms, q_w_ms, q_c_ms
 
@@ -84,4 +86,4 @@ def gen(filename):
 
 
 if __name__ == '__main__':
-    gen(VALID)
+    print(gen(VALID))

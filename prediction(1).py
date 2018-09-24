@@ -119,3 +119,4 @@ if __name__ == '__main__':
 
     logger.info("Start predicate ......")
     pred(c_model, pred_dataset, VALID_SET)
+#0.741548

@@ -78,7 +78,7 @@ def train(model: nn.Module, trainset: MRC_Dataset, epoch, validset: MRC_Dataset)
 
             doc_pad = embed(doc_pad).to(device)
             qry_pad = embed(qry_pad).to(device)
-
+            print(qry_pad)
             pred = model(doc_pad, doc_lens, doc_mask, qry_pad, qry_lens, qry_mask)
             loss = loss_func(pred, aws)
 
