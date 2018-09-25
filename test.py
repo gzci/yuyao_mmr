@@ -8,20 +8,32 @@ import torch.nn as nn
 from torch.nn import utils
 import torch.optim as optim
 from model.models import ClassificationModel
-from utils.dataset import MRC_Dataset
-from torch.autograd import Variable as V
 def mean(ipt, lens, dim=2):
     attn = torch.sum(ipt, dim=dim, keepdim=True)
+    print(attn)
     lens = lens.unsqueeze(1).unsqueeze(2).expand_as(attn)
+    print(lens)
     averaged_attention = attn / lens.float()
     return averaged_attention
+
+
+a = torch.randn(64).reshape([4,2,-1])
+# l =torch.ones(4).float()
+torch.sum(a, dim=1)
+# print(a)
+# a=mean(a,l,dim=1)
+# print(a)
+print(a.size())
+
+
+
 # # embed_mat = np.load('./mrc_data/vectors.npy')
 # embed = nn.Embedding.from_pretrained(torch.Tensor(embed_mat))
 # embed = nn.Embedding.from_pretrained(torch.randn([1000, 5]))
-al=[[331,123],[41, 331],[650, 673]]
-ax=t.arange(6)
-print(ax.reshape(2,3))
-print(al.reshape(1,-1))
+# al=[[331,123],[41, 331],[650, 673]]
+# ax=t.arange(6)
+# print(ax.reshape(2,3))
+# print(al.reshape(1,-1))
 
 
 # al =t.Tensor(al)
