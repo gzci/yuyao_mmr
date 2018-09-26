@@ -20,6 +20,8 @@ TRAIN = "./mrc_data/newtrain.json"
 VOCAB = VocabDict()
 
 
+
+
 def is_valid_data(x):
     if len(x['passage']) > 500:
         return False
@@ -35,6 +37,7 @@ def parse_function(x):
     passage, query, answer, al = x["passage"].strip(), x["query"].strip(), x["answer"].strip(), x["alternatives"]
     passage = list(map(lambda w: w.word, pseg.cut(passage)))
     query = list(map(lambda w: w.word, pseg.cut(query)))
+    al = list(map(lambda x:x.strip(),al.split("|")))
     answer_id = al.index(answer)
     return VOCAB.convert2idx(passage), VOCAB.convert2idx(query),  answer_id
 
@@ -51,6 +54,8 @@ def gen(filename):
         return jf
 
 class Dataset922(data.Dataset):
+    def shuffle(self):
+        self.items = [self.items[i] for i in torch.randperm(len(self.items))]
 
     def __init__(self, is_trainset,batch_size=64):
         if is_trainset:

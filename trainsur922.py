@@ -78,8 +78,10 @@ def train(model: nn.Module, trainset: Dataset922, epoch, validset: Dataset922):
 
             doc_pad = embed(doc_pad).to(device)
             qry_pad = embed(qry_pad).to(device)
-            print(qry_pad)
             pred = model(doc_pad, doc_lens, doc_mask, qry_pad, qry_lens, qry_mask)
+
+            print(pred)
+            print(aws)
             loss = loss_func(pred, aws)
 
             total += doc_pad.size(0)
@@ -130,7 +132,7 @@ if __name__ == '__main__':
     print("===================================================")
 
     logger.info("Load train set ......")
-    train_set = Dataset922(batch_size=batch_size, is_trainset=False)
+    train_set = Dataset922(batch_size=5, is_trainset=False)
 
     logger.info("Load valid set ......")
     # valid_set = MRC_Dataset(batch_size=batch_size, is_trainset=False)

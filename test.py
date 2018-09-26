@@ -17,13 +17,16 @@ def mean(ipt, lens, dim=2):
     return averaged_attention
 
 
-a = torch.randn(64).reshape([4,2,-1])
+a = torch.Tensor(torch.randn(64)).reshape([4,2,-1])
+print(a.size())
+torch.transpose(a, 1, 2)
+print(a.size())
 # l =torch.ones(4).float()
-torch.sum(a, dim=1)
+# torch.sum(a, dim=1)
 # print(a)
 # a=mean(a,l,dim=1)
 # print(a)
-print(a.size())
+# print(a.size())
 
 
 

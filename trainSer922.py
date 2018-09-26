@@ -11,11 +11,9 @@ from utils.dataset922 import *
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-# embed_mat = np.load('./mrc_data/vectors.npy')
-# embed = nn.Embedding.from_pretrained(torch.Tensor(embed_mat))
-# embed = nn.Embedding.from_pretrained(torch.randn([3,3]))
-embed = nn.Embedding.from_pretrained(torch.randn([VOCAB.size(), 3]))
-# embed = nn.Embedding(VOCAB.size(),3)
+embed_mat = np.load('./mrc_data/vectors.npy')
+embed = nn.Embedding.from_pretrained(torch.Tensor(embed_mat))
+
 embed_dim = 200
 hidden_dim = 128
 lr = 0.001
@@ -78,7 +76,7 @@ def train(model: nn.Module, trainset: Dataset922, epoch, validset: Dataset922):
 
             doc_pad = embed(doc_pad).to(device)
             qry_pad = embed(qry_pad).to(device)
-            print(qry_pad)
+
             pred = model(doc_pad, doc_lens, doc_mask, qry_pad, qry_lens, qry_mask)
             loss = loss_func(pred, aws)
 
@@ -86,7 +84,6 @@ def train(model: nn.Module, trainset: Dataset922, epoch, validset: Dataset922):
             pred = torch.argmax(pred, 1)
 
             correct = (pred == aws).sum().cpu().item()
-            print(correct)
             correct_total += correct
 
             logger.info("ep: %d, loss: %f, correct: %d" % (ep, loss.item(), correct))

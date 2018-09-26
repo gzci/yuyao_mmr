@@ -58,7 +58,7 @@ class ClassificationModel(nn.Module):
                                                        qry_encode, qry_mask)
         qry_output = mean(torch.cat([qry_output, qry_encode], dim=2), qry_len, dim=1)\
             .expand(doc_embed.size(0), doc_embed.size(1), 2 * qry_output.size(-1))    # batch * doc_len * (2*hidden_dim) 32,256,40
-        print('qry_output',qry_output.size())
+        # print('qry_output',qry_output.size())
         doc_embed = torch.cat([doc_embed, qry_output], dim=2)   # batch * doc_len * (embed_dim+hidden_dim)
         doc_encode = self.doc_encode(doc_embed, doc_len)    # batch * doc_len * (2*hidden_dim)
         doc_output, doc_attn = self.doc_self_attention(doc_encode, doc_mask,

@@ -78,15 +78,17 @@ def train(model: nn.Module, trainset: MRC_Dataset, epoch, validset: MRC_Dataset)
 
             doc_pad = embed(doc_pad).to(device)
             qry_pad = embed(qry_pad).to(device)
-            print(qry_pad)
+
             pred = model(doc_pad, doc_lens, doc_mask, qry_pad, qry_lens, qry_mask)
+            print(pred.size())
+            print(aws.size())
             loss = loss_func(pred, aws)
 
             total += doc_pad.size(0)
             pred = torch.argmax(pred, 1)
 
             correct = (pred == aws).sum().cpu().item()
-            print(correct)
+
             correct_total += correct
 
             logger.info("ep: %d, loss: %f, correct: %d" % (ep, loss.item(), correct))

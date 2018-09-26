@@ -39,11 +39,11 @@ class Model922(nn.Module):
                                             batch_first=True,
                                             bidirectional=True)
 
-        self.line_layer1 = nn.Linear(8*hidden_dim, 4*hidden_dim)
+        self.line_layer1 = nn.Linear(4*hidden_dim, 2*hidden_dim)
 
-        self.line_layer2 = nn.Linear(4* hidden_dim, hidden_dim)
+        self.line_layer2 = nn.Linear(2* hidden_dim, hidden_dim)
 
-        self.out_layer = nn.Linear(hidden_dim, 1)
+        self.out_layer = nn.Linear(hidden_dim, 3)
 
     def init_weights(self):
         for weight in self.dense_layer1.parameters():
@@ -76,8 +76,15 @@ class Model922(nn.Module):
         # 64,Dlen,128*8
         inline=self.trd_encode(doc_output,doc_len)
         #64,Dlen,2*128
-        last_in=torch.bmm(qry_output.reshape([qry_output.size(0),qry_output.size(2),-1]),inline.reshape([inline.reshape(),inline.reshape(2),-1]))
-        last_in.reshape([last_in.size(0),last_in.size(2),-1])
+        # print(qry_output.size()) #64,qlen,4*128
+        # print(inline.size())
+        qry_output=torch.transpose(qry_output,1,2)
+
+        # print(qry_output.size())
+        # print(inline.size())
+        last_in=torch.bmm(qry_output,inline)
+        # 64,4*128,2*128
+        last_in = torch.transpose(last_in, 1, 2)
         l=torch.ones(last_in.size(0)).float()
         last_in=mean(last_in,l,dim=1)
         out = self.line_layer1(last_in)
