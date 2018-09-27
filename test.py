@@ -8,19 +8,31 @@ import torch.nn as nn
 from torch.nn import utils
 import torch.optim as optim
 from model.models import ClassificationModel
-def mean(ipt, lens, dim=2):
-    attn = torch.sum(ipt, dim=dim, keepdim=True)
-    print(attn)
-    lens = lens.unsqueeze(1).unsqueeze(2).expand_as(attn)
-    print(lens)
-    averaged_attention = attn / lens.float()
-    return averaged_attention
+import os
 
+# print(open("./mrc_data/valid.pkl"))
+# def mean(ipt, lens, dim=2):
+#     attn = torch.sum(ipt, dim=dim, keepdim=True)
+#     print(attn)
+#     lens = lens.unsqueeze(1).unsqueeze(2).expand_as(attn)
+#     print(lens)
+#     averaged_attention = attn / lens.float()
+#     return averaged_attention
+# TRAINkpl = "./mrc_data/train.pkl"
+# VALIDkpl = "./mrc_data/valid.pkl"
+# from utils.dataset922 import Dataset922
+# if os.path.exists(VALIDkpl):
+#     print(1)
+# else: print(2)
+from utils.dataset922 import Dataset922
 
-a = torch.Tensor(torch.randn(64)).reshape([4,2,-1])
-print(a.size())
-torch.transpose(a, 1, 2)
-print(a.size())
+data = Dataset922(is_trainset=False)
+print(data[1])
+#
+# a = torch.Tensor(torch.randn(64)).reshape([4,2,-1])
+# print(a.size())
+# torch.transpose(a, 1, 2)
+# print(a.size())
 # l =torch.ones(4).float()
 # torch.sum(a, dim=1)
 # print(a)

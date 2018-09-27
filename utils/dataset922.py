@@ -6,6 +6,7 @@ import torch
 import ujson
 import jieba
 import pickle
+import os
 from multiprocessing import Pool
 sys.path.append("..")
 import jieba.posseg as pseg
@@ -17,6 +18,8 @@ from utils.vocab import VocabDict
 
 VALID = "./mrc_data/newvaild.json"
 TRAIN = "./mrc_data/newtrain.json"
+TRAINkpl = "train.pkl"
+VALIDkpl = "valid.pkl"
 VOCAB = VocabDict()
 
 
@@ -50,7 +53,7 @@ def gen(filename):
         jf = list(pool.map(parse_function, jf))
         pool.close()
         pool.join()
-        # pickle.dump(jf, open("valid.pkl", "wb"))
+        pickle.dump(jf, open(VALIDkpl, "wb"))
         return jf
 
 class Dataset922(data.Dataset):
@@ -59,10 +62,14 @@ class Dataset922(data.Dataset):
 
     def __init__(self, is_trainset,batch_size=64):
         if is_trainset:
-            filename = TRAIN
+            if os.path.exists(TRAINkpl):self.items = pickle.load(open(TRAINkpl,"rb"))
+            else: self.items= gen(TRAIN)
+
         else:
-            filename = VALID
-        self.items = gen(filename)
+            if os.path.exists(VALIDkpl):self.items = pickle.load(open(VALIDkpl, "rb"))
+            else: self.items= gen(VALID)
+
+
         self.batch_size = batch_size
     @staticmethod
     def _pad(raw_data, feature=False):
@@ -105,3 +112,4 @@ if __name__ == '__main__':
 
     data = Dataset922(is_trainset=False)
     print(data[1])
+    # print(os.path.exists(VALIDkpl))

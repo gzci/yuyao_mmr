@@ -33,7 +33,7 @@ class VocabDict:
     def size(self):
         return len(self.idx2word)
 
-vab=VocabDict()
+# vab=VocabDict()
 # print(len(vab.idx2word))
 # print(len(vab.idx2word))
 # print(vab.get_idx('你是傻逼'))

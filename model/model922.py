@@ -33,15 +33,11 @@ class Model922(nn.Module):
 
         self.doc_self_attention = Attention(input_size=2 * hidden_dim,
                                             output_size=2 * hidden_dim)
-        self.trd_encode = VariableLengthGRU(input_size=8*hidden_dim,
-                                            hidden_size=hidden_dim,
-                                            num_layers=2,
-                                            batch_first=True,
-                                            bidirectional=True)
 
-        self.line_layer1 = nn.Linear(4*hidden_dim, 2*hidden_dim)
 
-        self.line_layer2 = nn.Linear(2* hidden_dim, hidden_dim)
+        self.line_layer1 = nn.Linear(8*hidden_dim, hidden_dim)
+
+
 
         self.out_layer = nn.Linear(hidden_dim, 3)
 
@@ -72,26 +68,10 @@ class Model922(nn.Module):
         doc_output, doc_attn = self.doc_self_attention(doc_encode, doc_mask,
                                                        doc_encode, doc_mask,
                                                        doc_encode, doc_mask)
-        doc_output = torch.cat([doc_output, doc_encode, qry_output], dim=2)
-        # 64,Dlen,128*8
-        inline=self.trd_encode(doc_output,doc_len)
-        #64,Dlen,2*128
-        # print(qry_output.size()) #64,qlen,4*128
-        # print(inline.size())
-        qry_output=torch.transpose(qry_output,1,2)
+        doc_output = mean(torch.cat([doc_output, doc_encode, qry_output], dim=2), doc_len, dim=1)
 
-        # print(qry_output.size())
-        # print(inline.size())
-        last_in=torch.bmm(qry_output,inline)
-        # 64,4*128,2*128
-        last_in = torch.transpose(last_in, 1, 2)
-        l=torch.ones(last_in.size(0)).float()
-        last_in=mean(last_in,l,dim=1)
-        out = self.line_layer1(last_in)
+        out = self.line_layer1(doc_output)
         out = F.relu(out)
-        out=self.line_layer2(out)
-        out=F.relu(out)
-
         out = self.out_layer(out).squeeze(1)
 
         return out
