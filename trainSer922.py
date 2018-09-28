@@ -10,7 +10,7 @@ from utils.dataset922 import *
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
-
+#这种other的voctors 维度顶死了
 embed_mat = np.load('./mrc_data/vectors.npy')
 embed = nn.Embedding.from_pretrained(torch.Tensor(embed_mat))
 

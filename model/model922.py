@@ -15,7 +15,7 @@ class Model922(nn.Module):
     def __init__(self, embed_dim, hidden_dim):
         super(Model922, self).__init__()
 
-
+        self.drop = nn.Dropout(0.3)
         self.qry_encode = VariableLengthGRU(input_size=embed_dim,
                                             hidden_size=hidden_dim,
                                             num_layers=2,
@@ -51,8 +51,8 @@ class Model922(nn.Module):
 
     def forward(self, doc_embed, doc_len, doc_mask, qry_embed, qry_len, qry_mask):
 
-        # doc_embed = self.drop(doc_embed)
-        # qry_embed = self.drop(qry_embed)
+        doc_embed = self.drop(doc_embed)
+        qry_embed = self.drop(qry_embed)
         #  64,Qlen,200->
         qry_encode = self.qry_encode(qry_embed, qry_len) #64,Qlen,128*2
         qry_output, qry_attn = self.qry_self_attention(qry_encode, qry_mask,

@@ -53,7 +53,8 @@ def gen(filename):
         jf = list(pool.map(parse_function, jf))
         pool.close()
         pool.join()
-        pickle.dump(jf, open(VALIDkpl, "wb"))
+        if filename is TRAIN:pickle.dump(jf, open(TRAINkpl, "wb"))
+        else:pickle.dump(jf, open(VALIDkpl, "wb"))
         return jf
 
 class Dataset922(data.Dataset):
