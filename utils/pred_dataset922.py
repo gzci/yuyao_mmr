@@ -23,18 +23,17 @@ def read_json(filename):
         jf = list(map(lambda x: ujson.decode(x), jf.readlines()))
     return jf
 
-
 def is_valid_data(x):
-    if len(x["passage"]) >= 500:
+    if len(x["passage"]) > 500:
         invalid_items.append(x)
         return False
     else:
-        alternatives = x['alternatives'].replace("无法", "")
-        if len(re.findall(r"不|对|没|假|无|否", alternatives)) > 0:
-            return True
-        else:
+        al = list(filter(lambda c: len(c.strip()) > 0, str(x['alternatives']).split("|")))
+        if len(al) < 3:
             invalid_items.append(x)
             return False
+        else:
+            return True
 
 
 def parse_function(x):
@@ -44,7 +43,7 @@ def parse_function(x):
     query = list(map(lambda w: w.word, pseg.cut(query)))
     # positive: 0    unknown: 1   negative: 2
     alternatives = str(alternatives).split("|")
-
+    alternatives= list(map(lambda w:w.strip(),alternatives))
     return VOCAB.convert2idx(passage), VOCAB.convert2idx(query), alternatives, query_id
 
 
@@ -100,4 +99,5 @@ class Pred_Dataset922(data.Dataset):
         return doc_pad, doc_lens, doc_mask, qry_pad, qry_lens, qry_mask, alternatives, qry_ids
 
     def __len__(self):
+        print(len(self.items))
         return math.ceil(len(self.items) / self.batch_size)

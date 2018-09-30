@@ -15,7 +15,7 @@ embed_mat = np.load('./mrc_data/vectors.npy')
 embed = nn.Embedding.from_pretrained(torch.Tensor(embed_mat))
 
 embed_dim = 200
-hidden_dim = 128
+hidden_dim = 150
 lr = 0.001
 batch_size = 64
 weight_decay = 0.0001
@@ -58,7 +58,7 @@ def train(model: nn.Module, trainset: Dataset922, epoch, validset: Dataset922):
 
     optimizer = optim.Adam(parameters, lr=lr, weight_decay=weight_decay)
 
-    base_acc = 0.70
+    base_acc = 0.72
     for ep in range(epoch):
 
         model.train()

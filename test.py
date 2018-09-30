@@ -9,7 +9,7 @@ from torch.nn import utils
 import torch.optim as optim
 from model.models import ClassificationModel
 import os
-
+from utils.pred_dataset922 import *
 # print(open("./mrc_data/valid.pkl"))
 # def mean(ipt, lens, dim=2):
 #     attn = torch.sum(ipt, dim=dim, keepdim=True)
@@ -25,10 +25,16 @@ import os
 #     print(1)
 # else: print(2)
 from utils.dataset922 import Dataset922
-
-data = Dataset922(is_trainset=False)
-print(data[1])
 #
+
+VALID_SET = "./mrc_data/ai_challenger_oqmrc_validationset.json"
+TESTA_SET = "./mrc_data/ai_challenger_oqmrc_testa.json"
+MODEL_PATH = './checkpoints/c_m_acc-0.725454_ep-43.pth'
+
+
+# pred_dataset = Pred_Dataset922(filename=TESTA_SET, batch_size=64)
+# print(pred_dataset.__len__())
+# print("无法确定".strip().split("|")[0])
 # a = torch.Tensor(torch.randn(64)).reshape([4,2,-1])
 # print(a.size())
 # torch.transpose(a, 1, 2)

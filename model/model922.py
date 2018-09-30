@@ -15,7 +15,7 @@ class Model922(nn.Module):
     def __init__(self, embed_dim, hidden_dim):
         super(Model922, self).__init__()
 
-        self.drop = nn.Dropout(0.3)
+        self.drop = nn.Dropout(0.15)
         self.qry_encode = VariableLengthGRU(input_size=embed_dim,
                                             hidden_size=hidden_dim,
                                             num_layers=2,
@@ -35,9 +35,9 @@ class Model922(nn.Module):
                                             output_size=2 * hidden_dim)
 
 
-        self.line_layer1 = nn.Linear(8*hidden_dim, hidden_dim)
+        self.line_layer1 = nn.Linear(8*hidden_dim, 4*hidden_dim)
 
-
+        self.line_layer2=nn.Linear(4*hidden_dim,hidden_dim)
 
         self.out_layer = nn.Linear(hidden_dim, 3)
 
@@ -72,6 +72,8 @@ class Model922(nn.Module):
 
         out = self.line_layer1(doc_output)
         out = F.relu(out)
+        out = self.line_layer2(out)
+        out= F.sigmoid(out)
         out = self.out_layer(out).squeeze(1)
 
         return out
