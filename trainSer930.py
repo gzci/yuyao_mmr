@@ -5,21 +5,19 @@ import numpy as np
 import torch.nn as nn
 from torch.nn import utils
 import torch.optim as optim
-from model.model922 import *
+from model.model930 import *
 from utils.dataset922 import *
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
+#这种other的voctors 维度顶死了
+embed_mat = np.load('./mrc_data/vectors.npy')
+embed = nn.Embedding.from_pretrained(torch.Tensor(embed_mat))
 
-# embed_mat = np.load('./mrc_data/vectors.npy')
-# embed = nn.Embedding.from_pretrained(torch.Tensor(embed_mat))
-# embed = nn.Embedding.from_pretrained(torch.randn([3,3]))
-embed = nn.Embedding.from_pretrained(torch.randn([VOCAB.size(), 3]))
-# embed = nn.Embedding(VOCAB.size(),3)
-embed_dim = 3
-hidden_dim = 5
+embed_dim = 200
+hidden_dim = 256
 lr = 0.001
-batch_size = 32
+batch_size = 64
 weight_decay = 0.0001
 
 vis = visdom.Visdom()
@@ -60,7 +58,7 @@ def train(model: nn.Module, trainset: Dataset922, epoch, validset: Dataset922):
 
     optimizer = optim.Adam(parameters, lr=lr, weight_decay=weight_decay)
 
-    base_acc = 0.70
+    base_acc = 0.72
     for ep in range(epoch):
 
         model.train()
@@ -78,17 +76,14 @@ def train(model: nn.Module, trainset: Dataset922, epoch, validset: Dataset922):
 
             doc_pad = embed(doc_pad).to(device)
             qry_pad = embed(qry_pad).to(device)
-            pred = model(doc_pad, doc_lens, doc_mask, qry_pad, qry_lens, qry_mask)
 
-            print(pred.size())
-            print(aws)
+            pred = model(doc_pad, doc_lens, doc_mask, qry_pad, qry_lens, qry_mask)
             loss = loss_func(pred, aws)
 
             total += doc_pad.size(0)
             pred = torch.argmax(pred, 1)
 
             correct = (pred == aws).sum().cpu().item()
-            print(correct)
             correct_total += correct
 
             logger.info("ep: %d, loss: %f, correct: %d" % (ep, loss.item(), correct))
@@ -126,18 +121,18 @@ if __name__ == '__main__':
     logger.info("Start ......")
 
     logger.info("Create model ......")
-    c_model = Model922(embed_dim, hidden_dim).to(device)
+    c_model = Model930(embed_dim, hidden_dim).to(device)
     print("===================================================")
     print(c_model)
     print("===================================================")
 
     logger.info("Load train set ......")
-    train_set = Dataset922(batch_size=5, is_trainset=False)
+    train_set = Dataset922(batch_size=batch_size, is_trainset=True)
 
     logger.info("Load valid set ......")
-    # valid_set = MRC_Dataset(batch_size=batch_size, is_trainset=False)
+    valid_set = Dataset922(batch_size=batch_size, is_trainset=False)
 
-    train(c_model, train_set, 50, train_set)
+    train(c_model, train_set, 50, valid_set)
 
 
 

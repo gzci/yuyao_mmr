@@ -77,7 +77,7 @@ def pred(model_s, dataset, name=TESTA_SET):
         doc_pad, doc_lens, doc_mask, qry_pad, qry_lens, qry_mask, als, qry_ids = dataset[ii]
         pred_sum = torch.zeros([doc_pad.size(0), 3]).to(device)
         for model in model_s:
-            pred_ = model(doc_pad, doc_lens, doc_mask, qry_pad, qry_lens, qry_mask, als)
+            pred_ = model(doc_pad, doc_lens, doc_mask, qry_pad, qry_lens, qry_mask)
             pred_sum.add_(pred_)
         pred_ = torch.argmax(pred_sum, 1).cpu().tolist()
         pred_ = transform(pred_, als)

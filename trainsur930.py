@@ -5,7 +5,7 @@ import numpy as np
 import torch.nn as nn
 from torch.nn import utils
 import torch.optim as optim
-from model.model922 import *
+from model.model930 import *
 from utils.dataset922 import *
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -60,7 +60,7 @@ def train(model: nn.Module, trainset: Dataset922, epoch, validset: Dataset922):
 
     optimizer = optim.Adam(parameters, lr=lr, weight_decay=weight_decay)
 
-    base_acc = 0.70
+    base_acc = 0.73
     for ep in range(epoch):
 
         model.train()
@@ -80,15 +80,13 @@ def train(model: nn.Module, trainset: Dataset922, epoch, validset: Dataset922):
             qry_pad = embed(qry_pad).to(device)
             pred = model(doc_pad, doc_lens, doc_mask, qry_pad, qry_lens, qry_mask)
 
-            print(pred.size())
-            print(aws)
             loss = loss_func(pred, aws)
 
             total += doc_pad.size(0)
             pred = torch.argmax(pred, 1)
 
             correct = (pred == aws).sum().cpu().item()
-            print(correct)
+
             correct_total += correct
 
             logger.info("ep: %d, loss: %f, correct: %d" % (ep, loss.item(), correct))
@@ -126,7 +124,7 @@ if __name__ == '__main__':
     logger.info("Start ......")
 
     logger.info("Create model ......")
-    c_model = Model922(embed_dim, hidden_dim).to(device)
+    c_model = Model930(embed_dim, hidden_dim).to(device)
     print("===================================================")
     print(c_model)
     print("===================================================")

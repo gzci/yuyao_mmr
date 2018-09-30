@@ -32,6 +32,12 @@ TESTA_SET = "./mrc_data/ai_challenger_oqmrc_testa.json"
 MODEL_PATH = './checkpoints/c_m_acc-0.725454_ep-43.pth'
 
 
+
+a = t.arange(20).reshape(4,5)
+print(a)
+a=torch.unsqueeze(a,2)
+print(a)
+print(a.size())
 # pred_dataset = Pred_Dataset922(filename=TESTA_SET, batch_size=64)
 # print(pred_dataset.__len__())
 # print("无法确定".strip().split("|")[0])
